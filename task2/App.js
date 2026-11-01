@@ -21,7 +21,7 @@ const BIO =
 
 const SKILLS = ['React Native', 'JavaScript', 'UI Design', 'Git', 'Flexbox'];
 const BASE_FOLLOWERS = 1200;
-// TODO STEP 4: const MAX_MESSAGE = 140;
+const MAX_MESSAGE = 140;
 
 function formatCount(n) {
   return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -30,6 +30,8 @@ function formatCount(n) {
 export default function App() {
   const [isFollowing, setIsFollowing] = useState(false);
   const followers = BASE_FOLLOWERS + (isFollowing ? 1 : 0);
+  const [isComposerOpen, setIsComposerOpen] = useState(false);
+  const [message, setMessage] = useState('');
 
   const stats = [
     { label: 'Projects', value: '24' },
@@ -42,15 +44,19 @@ export default function App() {
   };
 
   const handleMessagePress = () => {
-    Alert.alert('Message', 'Message button pressed');
+    setIsComposerOpen(!isComposerOpen);
   };
 
   const handleSharePress = () => {
     Alert.alert('Share profile', 'Share button pressed');
   };
-  
-  // TODO STEP 3: add the state for follow / unfollow (useState)
-  // TODO STEP 4: add the state for the message composer
+
+  const handleSendPress = () => {
+    Alert.alert('Message sent', message);
+    setMessage('');
+    setIsComposerOpen(false);
+  };
+
   // TODO STEP 5: add the state for the bio, the online status and the selected skills
 
   return (
@@ -107,7 +113,7 @@ export default function App() {
 
           {/* STEP 1-3: the two action buttons */}
           <View style={styles.actions}>
-              <Pressable
+            <Pressable
               style={({ pressed }) => [
                 styles.button,
                 styles.buttonPrimary,
@@ -131,11 +137,40 @@ export default function App() {
               style={({ pressed }) => [styles.button, pressed && styles.pressed]}
               onPress={handleMessagePress}
             >
-              <Text style={styles.buttonText}>Message</Text>
+              <Text style={styles.buttonText}>
+                {isComposerOpen ? 'Close' : 'Message'}
+              </Text>
             </Pressable>
           </View>
 
-          {/* TODO STEP 4: composer here */}
+          {isComposerOpen && (
+            <View style={styles.composer}>
+              <TextInput
+                style={styles.input}
+                value={message}
+                onChangeText={(newText) => setMessage(newText)}
+                maxLength={MAX_MESSAGE}
+                placeholder="Write a message..."
+                placeholderTextColor={COLORS.muted}
+              />
+              <View style={styles.composerFooter}>
+                <Text style={styles.counter}>
+                  {message.length}/{MAX_MESSAGE} characters
+                </Text>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.sendButton,
+                    message.trim().length === 0 && styles.sendButtonDisabled,
+                    pressed && styles.pressed,
+                  ]}
+                  onPress={handleSendPress}
+                  disabled={message.trim().length === 0}
+                >
+                  <Text style={styles.sendText}>Send</Text>
+                </Pressable>
+              </View>
+            </View>
+          )}
 
           {/* STEP 1: Share button (core component) */}
           <View style={styles.shareWrapper}>
@@ -236,10 +271,10 @@ const styles = StyleSheet.create({
   buttonText: { fontSize: 15, fontWeight: '600', color: COLORS.primary },
   buttonTextPrimary: { color: '#FFFFFF' },
 
-    buttonTextFollowing: {
+  buttonTextFollowing: {
     color: COLORS.primary,
   },
-  
+
   buttonFollowing: { backgroundColor: COLORS.primaryLight },
   composer: { marginTop: 16 },
   composerFooter: {
