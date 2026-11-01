@@ -1,7 +1,8 @@
 // TASK 2 — Interactive Profile Card (starter)
 // Start point: the solution of Task 1 + the new data. Follow the steps in README.md.
 // TODO: add the imports you need in each step (Pressable, Button, Alert, TextInput, useState...)
-import { View, Text, Image, ScrollView, StyleSheet, Platform, Pressable, Button, Alert} from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, Platform, Pressable, Button, Alert, TextInput } from 'react-native';
+import { useState } from 'react';
 
 const COLORS = {
   background: '#EEF1F6',
@@ -27,9 +28,17 @@ function formatCount(n) {
 }
 
 export default function App() {
-  // TODO STEP 1: write the event handlers (handleFollowPress, handleMessagePress, handleSharePress)
+  const [isFollowing, setIsFollowing] = useState(false);
+  const followers = BASE_FOLLOWERS + (isFollowing ? 1 : 0);
+
+  const stats = [
+    { label: 'Projects', value: '24' },
+    { label: 'Followers', value: formatCount(followers) },
+    { label: 'Following', value: '180' },
+  ];
+
   const handleFollowPress = () => {
-    Alert.alert('Follow', 'Follow button pressed');
+    setIsFollowing(!isFollowing);
   };
 
   const handleMessagePress = () => {
@@ -39,15 +48,7 @@ export default function App() {
   const handleSharePress = () => {
     Alert.alert('Share profile', 'Share button pressed');
   };
-
-  // STEP 3: followers must grow by 1 while you are following
-  const followers = BASE_FOLLOWERS;
-  const stats = [
-    { label: 'Projects', value: '24' },
-    { label: 'Followers', value: formatCount(followers) },
-    { label: 'Following', value: '180' },
-  ];
-
+  
   // TODO STEP 3: add the state for follow / unfollow (useState)
   // TODO STEP 4: add the state for the message composer
   // TODO STEP 5: add the state for the bio, the online status and the selected skills
@@ -106,15 +107,24 @@ export default function App() {
 
           {/* STEP 1-3: the two action buttons */}
           <View style={styles.actions}>
-            <Pressable
+              <Pressable
               style={({ pressed }) => [
                 styles.button,
                 styles.buttonPrimary,
+                isFollowing && styles.buttonFollowing,
                 pressed && styles.pressed,
               ]}
               onPress={handleFollowPress}
             >
-              <Text style={[styles.buttonText, styles.buttonTextPrimary]}>Follow</Text>
+              <Text
+                style={[
+                  styles.buttonText,
+                  styles.buttonTextPrimary,
+                  isFollowing && styles.buttonTextFollowing,
+                ]}
+              >
+                {isFollowing ? 'Following' : 'Follow'}
+              </Text>
             </Pressable>
 
             <Pressable
@@ -226,7 +236,10 @@ const styles = StyleSheet.create({
   buttonText: { fontSize: 15, fontWeight: '600', color: COLORS.primary },
   buttonTextPrimary: { color: '#FFFFFF' },
 
-  // --- estilos nuevos del bloque del enunciado (pegar todos) ---
+    buttonTextFollowing: {
+    color: COLORS.primary,
+  },
+  
   buttonFollowing: { backgroundColor: COLORS.primaryLight },
   composer: { marginTop: 16 },
   composerFooter: {
