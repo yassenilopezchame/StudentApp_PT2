@@ -1,7 +1,7 @@
 // TASK 2 — Interactive Profile Card (starter)
 // Start point: the solution of Task 1 + the new data. Follow the steps in README.md.
 // TODO: add the imports you need in each step (Pressable, Button, Alert, TextInput, useState...)
-import { View, Text, Image, ScrollView, StyleSheet, Platform } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, Platform, Pressable, Button, Alert} from 'react-native';
 
 const COLORS = {
   background: '#EEF1F6',
@@ -22,12 +22,24 @@ const SKILLS = ['React Native', 'JavaScript', 'UI Design', 'Git', 'Flexbox'];
 const BASE_FOLLOWERS = 1200;
 // TODO STEP 4: const MAX_MESSAGE = 140;
 
-// Adds thousands separators: 1200 -> '1,200'
 function formatCount(n) {
   return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 export default function App() {
+  // TODO STEP 1: write the event handlers (handleFollowPress, handleMessagePress, handleSharePress)
+  const handleFollowPress = () => {
+    Alert.alert('Follow', 'Follow button pressed');
+  };
+
+  const handleMessagePress = () => {
+    Alert.alert('Message', 'Message button pressed');
+  };
+
+  const handleSharePress = () => {
+    Alert.alert('Share profile', 'Share button pressed');
+  };
+
   // STEP 3: followers must grow by 1 while you are following
   const followers = BASE_FOLLOWERS;
   const stats = [
@@ -36,7 +48,6 @@ export default function App() {
     { label: 'Following', value: '180' },
   ];
 
-  // TODO STEP 1: write the event handlers (handleFollowPress, handleMessagePress, handleSharePress)
   // TODO STEP 3: add the state for follow / unfollow (useState)
   // TODO STEP 4: add the state for the message composer
   // TODO STEP 5: add the state for the bio, the online status and the selected skills
@@ -93,21 +104,29 @@ export default function App() {
             ))}
           </View>
 
-          {/* TODO STEP 1-3: turn these two Views into Pressable components with onPress.
-                STEP 2: give them visual feedback with the style function (pressed).
-                STEP 3: make the Follow button toggle between 'Follow' and 'Following'. */}
+          {/* STEP 1-3: the two action buttons */}
           <View style={styles.actions}>
-            <View style={[styles.button, styles.buttonPrimary]}>
+            <Pressable
+              style={[styles.button, styles.buttonPrimary]}
+              onPress={handleFollowPress}
+            >
               <Text style={[styles.buttonText, styles.buttonTextPrimary]}>Follow</Text>
-            </View>
-            <View style={styles.button}>
+            </Pressable>
+            <Pressable style={styles.button} onPress={handleMessagePress}>
               <Text style={styles.buttonText}>Message</Text>
-            </View>
+            </Pressable>
           </View>
 
-          {/* TODO STEP 4: when 'Message' is pressed, show a composer here (TextInput + counter + Send) */}
+          {/* TODO STEP 4: composer here */}
 
-          {/* TODO STEP 1: add a 'Share profile' Button (core component) here */}
+          {/* STEP 1: Share button (core component) */}
+          <View style={styles.shareWrapper}>
+            <Button
+              title="Share profile"
+              color={COLORS.primary}
+              onPress={handleSharePress}
+            />
+          </View>
         </View>
       </View>
     </ScrollView>
@@ -128,36 +147,22 @@ const cardShadow = Platform.select({
 });
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
+  screen: { flex: 1, backgroundColor: COLORS.background },
   screenContent: {
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 20,
     paddingVertical: 40,
   },
-  card: {
-    backgroundColor: COLORS.card,
-    borderRadius: 20,
-    ...cardShadow,
-  },
+  card: { backgroundColor: COLORS.card, borderRadius: 20, ...cardShadow },
   banner: {
     width: '100%',
     height: 120,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
-  body: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginTop: -44,
-  },
+  body: { paddingHorizontal: 20, paddingBottom: 20 },
+  headerRow: { flexDirection: 'row', alignItems: 'flex-start', marginTop: -44 },
   avatar: {
     width: 96,
     height: 96,
@@ -176,33 +181,11 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: COLORS.card,
   },
-  headerText: {
-    flex: 1,
-    marginLeft: 14,
-    marginTop: 52,
-  },
-  name: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: COLORS.text,
-  },
-  role: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: COLORS.primary,
-    marginTop: 2,
-  },
-  location: {
-    fontSize: 13,
-    color: COLORS.muted,
-    marginTop: 2,
-  },
-  bio: {
-    marginTop: 16,
-    fontSize: 14,
-    lineHeight: 21,
-    color: COLORS.text,
-  },
+  headerText: { flex: 1, marginLeft: 14, marginTop: 52 },
+  name: { fontSize: 22, fontWeight: '700', color: COLORS.text },
+  role: { fontSize: 15, fontWeight: '600', color: COLORS.primary, marginTop: 2 },
+  location: { fontSize: 13, color: COLORS.muted, marginTop: 2 },
+  bio: { marginTop: 16, fontSize: 14, lineHeight: 21, color: COLORS.text },
   statsRow: {
     flexDirection: 'row',
     marginTop: 18,
@@ -210,47 +193,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: COLORS.border,
   },
-  stat: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  statDivider: {
-    borderRightWidth: 1,
-    borderRightColor: COLORS.border,
-  },
-  statValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: COLORS.text,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: COLORS.muted,
-    marginTop: 2,
-  },
-  tags: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 16,
-  },
+  stat: { flex: 1, alignItems: 'center', paddingVertical: 12 },
+  statDivider: { borderRightWidth: 1, borderRightColor: COLORS.border },
+  statValue: { fontSize: 18, fontWeight: '700', color: COLORS.text },
+  statLabel: { fontSize: 12, color: COLORS.muted, marginTop: 2 },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 16 },
   tag: {
     backgroundColor: COLORS.primaryLight,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 999,
   },
-  tagText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: COLORS.primary,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 20,
-  },
+  tagText: { fontSize: 12, fontWeight: '600', color: COLORS.primary },
+  actions: { flexDirection: 'row', gap: 12, marginTop: 20 },
   button: {
     flex: 1,
     alignItems: 'center',
@@ -259,15 +214,42 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: COLORS.primary,
   },
-  buttonPrimary: {
+  buttonPrimary: { backgroundColor: COLORS.primary },
+  buttonText: { fontSize: 15, fontWeight: '600', color: COLORS.primary },
+  buttonTextPrimary: { color: '#FFFFFF' },
+
+  // --- estilos nuevos del bloque del enunciado (pegar todos) ---
+  buttonFollowing: { backgroundColor: COLORS.primaryLight },
+  composer: { marginTop: 16 },
+  composerFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  counter: { fontSize: 12, color: COLORS.muted },
+  hint: { marginTop: 8, fontSize: 12, color: COLORS.muted },
+  input: {
+    height: 44,
+    paddingHorizontal: 12,
+    fontSize: 15,
+    color: COLORS.text,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 12,
+  },
+  link: { marginTop: 4, fontSize: 14, fontWeight: '600', color: COLORS.primary },
+  offlineBadge: { backgroundColor: COLORS.offline },
+  pressed: { opacity: 0.6 },
+  sendButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 10,
     backgroundColor: COLORS.primary,
   },
-  buttonText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: COLORS.primary,
-  },
-  buttonTextPrimary: {
-    color: '#FFFFFF',
-  },
+  sendButtonDisabled: { backgroundColor: COLORS.offline },
+  sendText: { fontSize: 14, fontWeight: '600', color: '#FFFFFF' },
+  shareWrapper: { marginTop: 12, alignItems: 'center' },
+  tagSelected: { backgroundColor: COLORS.primary },
+  tagTextSelected: { color: '#FFFFFF' },
 });
